@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Water Monster — Hydration Buddy</title>
+  <title>Water Monster: Hydration Buddy</title>
   <meta name="description" content="Turn drinking water into a fun habit. Set goals, feed your Water Monster, complete quests and earn rewards." />
   <meta name="theme-color" content="#00A4FF">
   <style>
-    :root{--accent:#00A4FF;--bg:#f7fbff;--card:#fff}
+    :root{--accent:#00C48C;--bg:#ffffff;--card:#f6f7f6}
     body{font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);color:#0b2233;margin:0}
     .container{max-width:980px;margin:48px auto;padding:24px}
     .hero{display:flex;gap:24px;align-items:center}
@@ -18,12 +18,21 @@
     .cta{display:inline-block;background:var(--accent);color:#fff;padding:12px 18px;border-radius:12px;text-decoration:none;font-weight:600}
     .features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
     .card{background:var(--card);padding:18px;border-radius:14px;box-shadow:0 6px 22px rgba(9,30,45,0.06)}
-    /* Updated screenshots style: responsive grid, consistent card look */
-    .screens{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:26px}
-    .screenshot{width:100%;border-radius:12px;box-shadow:0 8px 26px rgba(9,30,45,0.08);object-fit:cover;height:460px}
+
+    /* Gallery: one large main screenshot and two supporting thumbnails */
+    .gallery{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start;margin-top:26px}
+    /* wrapper for images: use neutral card background so mockups don't look green */
+    .shot-wrapper{background:transparent;padding:0;border-radius:0;box-shadow:none}
+    .main-shot{width:100%;border-radius:12px;box-shadow:0 16px 40px rgba(9,30,45,0.10);object-fit:contain;height:520px;background:transparent}
+    .thumbs{display:flex;flex-direction:column;gap:12px}
+    .thumb{width:100%;height:250px;border-radius:10px;object-fit:contain;box-shadow:0 10px 28px rgba(9,30,45,0.08);background:transparent}
+
+    /* Fallback grid for small screens */
+    .screens{display:none}
+    @media(max-width:1000px){.gallery{grid-template-columns:1fr;}.thumb{width:100%;height:180px}.main-shot{height:360px}}
     footer{margin-top:36px;color:#456;font-size:14px}
     .badge{display:inline-block;margin-top:12px}
-    @media(max-width:800px){.hero{flex-direction:column}.features{grid-template-columns:repeat(1,1fr)}.screenshot{height:360px}}
+    @media(max-width:800px){.hero{flex-direction:column}.features{grid-template-columns:repeat(1,1fr)}}
   </style>
 </head>
 <body>
@@ -39,7 +48,8 @@
         </div>
       </div>
       <div class="right">
-        <img src="assets/phone-mockup.png" alt="Water Monster mockup" width="220" />
+        <!-- Will be populated with the selected best screenshot if phone mockup not available -->
+        <img id="hero-mockup" src="" alt="Water Monster mockup" width="220" style="border-radius:18px;box-shadow:0 12px 30px rgba(9,30,45,0.12);display:none;object-fit:cover;">
       </div>
     </header>
 
@@ -59,22 +69,24 @@
       </div>
     </section>
 
-    <section id="screens" class="screens" aria-label="App screenshots">
-      <!-- screenshots injected by script -->
+    <section id="screens" class="gallery" aria-label="App screenshots">
+      <!-- main screenshot and two supporting thumbnails injected by script -->
+      <div id="main-col"></div>
+      <div id="thumb-col" class="thumbs"></div>
     </section>
 
     <section style="margin-top:32px">
       <h3>Why Water Monster?</h3>
       <p>Water Monster makes healthy habits fun. Using gentle reminders, playful rewards and simple tracking, we turn hydration into a daily game you want to play.</p>
       <ul>
-        <li>Set personalized daily goals</li>
-        <li>Sync with Apple Health (optional)</li>
-        <li>Widgets & shareable achievements</li>
+        <li>Smart reminders to keep you on track</li>
+        <li>Gamified daily tasks and rewards</li>
+        <li>Clear progress charts to monitor hydration</li>
       </ul>
     </section>
-
+    
     <footer>
-      <p>Water Monster — Turn drinking water into a fun habit. For privacy & support, contact <a href="mailto:ycaktirma@gmail.com">hello@example.com</a>.</p>
+      <p>Water Monster — Turn drinking water into a fun habit. For privacy & support, contact <a href="mailto:ycaktirma@gmail.com">ycaktirma@gmail.com</a>.</p>
     </footer>
   </div>
 
@@ -82,61 +94,144 @@
     (function(){
       // List of the six screenshot files in the repo's assets folder
       const shots = [
-        'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.35.41.png',
-        'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.35.47.png',
-        'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.35.33.png',
-        'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.34.54.png',
-        'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.35.00.png',
-        'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.35.10.png'
+        'assets/Untitled design.png',
+        'assets/Untitled design (1).png',
+        'assets/Untitled design (3).png',
+        // 'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.35.47.png',
+        // 'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.35.33.png',
+        // 'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.34.54.png',
+        // 'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.35.00.png',
+        // 'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.35.10.png'
       ];
 
-      const container = document.getElementById('screens');
+      const mainCol = document.getElementById('main-col');
+      const thumbCol = document.getElementById('thumb-col');
+
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
 
-      function averageColor(img){
-        // downscale to speed up processing and get representative color
-        const w = 40;
+      function analyzeImage(img){
+        // downscale for speed
+        const w = 60;
         const h = Math.max(1, Math.round(w * img.height / img.width));
         canvas.width = w; canvas.height = h;
         try { ctx.drawImage(img, 0, 0, w, h); } catch(e) { return null; }
         const data = ctx.getImageData(0, 0, w, h).data;
-        let r=0,g=0,b=0,c=0;
-        for(let i=0;i<data.length;i+=4){ r+=data[i]; g+=data[i+1]; b+=data[i+2]; c++; }
-        return c ? {r:Math.round(r/c), g:Math.round(g/c), b:Math.round(b/c)} : null;
+        let r=0,g=0,b=0,c=0, max=0, min=255;
+        for(let i=0;i<data.length;i+=4){ r+=data[i]; g+=data[i+1]; b+=data[i+2]; c++; max = Math.max(max, data[i], data[i+1], data[i+2]); min = Math.min(min, data[i], data[i+1], data[i+2]); }
+        if(!c) return null;
+        const avg = {r:Math.round(r/c), g:Math.round(g/c), b:Math.round(b/c)};
+        const maxch = Math.max(avg.r, avg.g, avg.b); const minch = Math.min(avg.r, avg.g, avg.b);
+        const saturation = maxch===0?0:((maxch-minch)/maxch);
+        // green bias score: how much green dominates over red & blue
+        const greenScore = avg.g - (avg.r + avg.b)/2;
+        // retention heuristic: prefer vivid (high saturation) and green-forward images
+        const retentionScore = (greenScore * 0.7) + (saturation * 255 * 0.3);
+        return {avg, saturation, greenScore, retentionScore};
       }
 
-      let primary = null;
-
+      // load all images and analyze
+      const entries = [];
+      let loaded = 0;
       shots.forEach((src, idx) => {
         const img = new Image();
+        img.crossOrigin = 'anonymous';
         img.src = src;
         img.alt = 'Screenshot ' + (idx+1);
         img.className = 'screenshot';
 
         img.onload = () => {
-          // inject into DOM
-          const figure = document.createElement('figure');
-          figure.style.margin = 0;
-          figure.appendChild(img);
-          container.appendChild(figure);
-
-          // compute average color from the first loaded image that yields a color
-          const col = averageColor(img);
-          if(col && !primary){ primary = col; applyAccent(primary); }
+          const stats = analyzeImage(img) || {avg:{r:0,g:0,b:0},saturation:0,greenScore:0,retentionScore:0};
+          entries.push({src, img, stats});
+          loaded++;
+          if(loaded===shots.length) renderBest();
         };
 
-        img.onerror = () => { console.warn('Failed to load screenshot:', src); };
+        img.onerror = () => {
+          console.warn('Failed to load screenshot:', src);
+          loaded++;
+          if(loaded===shots.length) renderBest();
+        };
       });
 
+      function mixWithGreen(col, fraction){
+        // mix provided RGB with a pleasant green to bias accent toward greens
+        const green = {r:0, g:196, b:140};
+        const r = Math.round(col.r*(1-fraction) + green.r*fraction);
+        const g = Math.round(col.g*(1-fraction) + green.g*fraction);
+        const b = Math.round(col.b*(1-fraction) + green.b*fraction);
+        return {r,g,b};
+      }
+
+      function rgbStr(c){ return `rgb(${c.r}, ${c.g}, ${c.b})`; }
+
       function applyAccent(col){
-        const rgb = `rgb(${col.r}, ${col.g}, ${col.b})`;
+        // bias mix toward green to ensure visible green accent
+        const mixed = mixWithGreen(col, 0.45);
+        const rgb = rgbStr(mixed);
         document.documentElement.style.setProperty('--accent', rgb);
-        // subtle background gradient using accent
         document.body.style.background = `linear-gradient(180deg, ${rgb}22, var(--bg))`;
         const cta = document.querySelector('.cta'); if(cta) cta.style.background = rgb;
         const tags = document.querySelectorAll('.tag'); tags.forEach(t=>t.style.color = rgb);
       }
+
+      function renderBest(){
+        if(entries.length===0){ console.warn('No screenshots available'); return; }
+        // sort by retentionScore desc
+        entries.sort((a,b)=> (b.stats.retentionScore||0) - (a.stats.retentionScore||0));
+        const best = entries[0];
+        const second = entries[1];
+        const third = entries[2];
+
+        // clear columns
+        mainCol.innerHTML = '';
+        thumbCol.innerHTML = '';
+
+        // main image
+        const mainImg = document.createElement('img');
+        mainImg.src = best.src;
+        mainImg.alt = 'Main screenshot';
+        mainImg.className = 'main-shot';
+
+        // If image filename suggests it's a new 'Untitled' mockup, wrap it so its background matches page bg
+        if(/Untitled/i.test(best.src)){
+          const wrap = document.createElement('div');
+          wrap.className = 'shot-wrapper';
+          wrap.appendChild(mainImg);
+          mainCol.appendChild(wrap);
+        } else {
+          mainCol.appendChild(mainImg);
+        }
+
+        // supporting thumbs (up to 2)
+        [second, third].forEach(entry => {
+          if(!entry) return;
+          const t = document.createElement('img');
+          t.src = entry.src;
+          t.alt = 'Supporting screenshot';
+          t.className = 'thumb';
+
+          if(/Untitled/i.test(entry.src)){
+            const w = document.createElement('div');
+            w.className = 'shot-wrapper';
+            w.appendChild(t);
+            thumbCol.appendChild(w);
+          } else {
+            thumbCol.appendChild(t);
+          }
+        });
+
+        // set accent based on best image average color
+        if(best.stats && best.stats.avg) applyAccent(best.stats.avg);
+
+        // populate hero mockup with the chosen main screenshot if phone mockup asset is missing
+        const heroImg = document.getElementById('hero-mockup');
+        if(heroImg){
+          heroImg.src = best.src;
+          heroImg.style.display = 'block';
+        }
+      }
+
     })();
   </script>
 </body>
