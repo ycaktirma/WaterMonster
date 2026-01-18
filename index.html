@@ -18,10 +18,12 @@
     .cta{display:inline-block;background:var(--accent);color:#fff;padding:12px 18px;border-radius:12px;text-decoration:none;font-weight:600}
     .features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
     .card{background:var(--card);padding:18px;border-radius:14px;box-shadow:0 6px 22px rgba(9,30,45,0.06)}
-    .screens{display:flex;gap:12px;margin-top:26px;overflow:auto}
+    /* Updated screenshots style: responsive grid, consistent card look */
+    .screens{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:26px}
+    .screenshot{width:100%;border-radius:12px;box-shadow:0 8px 26px rgba(9,30,45,0.08);object-fit:cover;height:460px}
     footer{margin-top:36px;color:#456;font-size:14px}
     .badge{display:inline-block;margin-top:12px}
-    @media(max-width:800px){.hero{flex-direction:column}.features{grid-template-columns:repeat(1,1fr)}}
+    @media(max-width:800px){.hero{flex-direction:column}.features{grid-template-columns:repeat(1,1fr)}.screenshot{height:360px}}
   </style>
 </head>
 <body>
@@ -57,10 +59,8 @@
       </div>
     </section>
 
-    <section class="screens" aria-label="App screenshots">
-      <img src="assets/screenshot1.png" alt="Daily goal screen" width="220" />
-      <img src="assets/screenshot2.png" alt="Monster feeding" width="220" />
-      <img src="assets/screenshot3.png" alt="Progress charts" width="220" />
+    <section id="screens" class="screens" aria-label="App screenshots">
+      <!-- screenshots injected by script -->
     </section>
 
     <section style="margin-top:32px">
@@ -74,9 +74,70 @@
     </section>
 
     <footer>
-      <p>Water Monster — Turn drinking water into a fun habit. For privacy & support, contact <a href="mailto:hello@example.com">hello@example.com</a>.</p>
-      <p style="font-size:12px;color:#7a98a8;margin-top:6px">To publish: push this branch to GitHub. In your repository Settings → Pages, set Source to the <strong>main</strong> branch, / (root). Your site will be available at https://&lt;username&gt;.github.io/&lt;repo&gt;/</p>
+      <p>Water Monster — Turn drinking water into a fun habit. For privacy & support, contact <a href="mailto:ycaktirma@gmail.com">hello@example.com</a>.</p>
     </footer>
   </div>
+
+  <script>
+    (function(){
+      // List of the six screenshot files in the repo's assets folder
+      const shots = [
+        'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.35.41.png',
+        'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.35.47.png',
+        'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.35.33.png',
+        'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.34.54.png',
+        'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.35.00.png',
+        'assets/Simulator Screenshot - iPhone 16 Plus - 2026-01-18 at 13.35.10.png'
+      ];
+
+      const container = document.getElementById('screens');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      function averageColor(img){
+        // downscale to speed up processing and get representative color
+        const w = 40;
+        const h = Math.max(1, Math.round(w * img.height / img.width));
+        canvas.width = w; canvas.height = h;
+        try { ctx.drawImage(img, 0, 0, w, h); } catch(e) { return null; }
+        const data = ctx.getImageData(0, 0, w, h).data;
+        let r=0,g=0,b=0,c=0;
+        for(let i=0;i<data.length;i+=4){ r+=data[i]; g+=data[i+1]; b+=data[i+2]; c++; }
+        return c ? {r:Math.round(r/c), g:Math.round(g/c), b:Math.round(b/c)} : null;
+      }
+
+      let primary = null;
+
+      shots.forEach((src, idx) => {
+        const img = new Image();
+        img.src = src;
+        img.alt = 'Screenshot ' + (idx+1);
+        img.className = 'screenshot';
+
+        img.onload = () => {
+          // inject into DOM
+          const figure = document.createElement('figure');
+          figure.style.margin = 0;
+          figure.appendChild(img);
+          container.appendChild(figure);
+
+          // compute average color from the first loaded image that yields a color
+          const col = averageColor(img);
+          if(col && !primary){ primary = col; applyAccent(primary); }
+        };
+
+        img.onerror = () => { console.warn('Failed to load screenshot:', src); };
+      });
+
+      function applyAccent(col){
+        const rgb = `rgb(${col.r}, ${col.g}, ${col.b})`;
+        document.documentElement.style.setProperty('--accent', rgb);
+        // subtle background gradient using accent
+        document.body.style.background = `linear-gradient(180deg, ${rgb}22, var(--bg))`;
+        const cta = document.querySelector('.cta'); if(cta) cta.style.background = rgb;
+        const tags = document.querySelectorAll('.tag'); tags.forEach(t=>t.style.color = rgb);
+      }
+    })();
+  </script>
 </body>
 </html>
