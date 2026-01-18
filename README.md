@@ -1,2 +1,3 @@
 # ycaktirma.github.io
-water monster mobile app page for app store.
+
+<h1 style="color:red">water monster mobile app page for app store.</h1>
